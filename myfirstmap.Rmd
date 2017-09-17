@@ -1,0 +1,102 @@
+---
+title: "An Introduction to R Markdown and Leaflet: New York City Landmarks"
+author: "Mary T."
+date: "September 16, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+R Markdown is built into RStudio and allows you to create documents like HTML, PDF, and Word documents from R. With R Markdown, you can embed R code into your documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+Leaflet is one of the most popular Javascript libraries for creating interactive maps. The leaflet R package allows you to create your own leaflet maps without needing to know any Javascript. For more details on Leaflet see <https://rstudio.github.io/leaflet/>.
+
+The example below uses the leaflet package to highlight 12 New York City landmarks.
+
+## Installation
+Install this R package:
+
+```{r}
+#install.packages("leaflet")
+
+```
+
+
+## My First Map
+The leaflet() function creates a map widget that you can store in a variable so that you can modify the map later on. You can add features to the map using the pipe operator (%>%). The addTiles() function adds mapping data from Open Street Map <http://www.openstreetmap.org/#map=4/38.01/-95.84>.
+
+```{r}
+library(leaflet)
+my_map <- leaflet() %>% 
+        addTiles()
+my_map
+
+```
+
+## Adding Markers
+You can add markers to the map using the addMarkers() function by specifying the longitude and latitude. You can also specify popup text for when you click on the marker with the popup argument.
+
+```{r}
+library(leaflet)
+my_map <- my_map %>%
+  addMarkers(lat=40.748817, lng=-73.985428, 
+             popup="The Empire State Building")
+my_map
+```
+
+## Adding Multiple Markers
+Here are some markers and popups showing the 12 New York City landmarks. You can draw arbitrary shapes on the maps you create. The code below draws a rectangle around the area with the majority of the landmarks.
+Select a landmark to be directed to its website.
+
+```{r, results='hide'}
+library(leaflet)
+nycIcon <- makeIcon(
+    iconUrl = "http://main.tvgu1jdkm2wvqi.maxcdn-edge.com/wp-content/uploads/2016/SLH/mlb_primary/new_york_yankees_1915-1946.png",
+    iconWidth = 20*215/230, iconHeight = 20,
+    iconAnchorX = 20*215/230/2, iconAnchorY = 16
+  )
+  
+  
+nycLatLong <- data.frame(
+    lat = c(40.748817, 40.689247, 40.785091, 40.758896, 40.752726, 40.75874, 40.779166, 40.706086, 40.75165, 40.699475, 41.111547, 40.715751),
+    lng = c(-73.985428, -74.044502, -73.968285, -73.985130, -73.977229, -73.978674, -73.962928, -73.996864, -73.975353, -74.039559, -73.858381, -73.997031))
+  
+nycLatLong %>% 
+    leaflet() %>%
+    addTiles() %>%
+    addMarkers(icon = nycIcon)
+
+```
+
+```{r}
+library(leaflet)
+nycSites <- c(
+    "<a href='http://http://www.esbnyc.com/'> Empire State Building</a>",
+    "<a href='https://www.nps.gov/stli/index.htm/'> Statue of Liberty National Monument</a>",
+    "<a href='http://www.centralparknyc.org/'> Central Park </a>",
+    "<a href='http://www.timessquarenyc.org/index.aspx/'> Times Square </a>",
+    "<a href='http://www.grandcentralterminal.com/'> Grand Central Terminal </a>",
+    "<a href='https://www.rockefellercenter.com/'> Rockefeller Center </a>",
+    "<a href='http://www.metmuseum.org/'> Metropolitan Museum of Art </a>",
+    "<a href='http://www.nyc.gov/html/dot/html/infrastructure/brooklyn-bridge.shtml/'> Brooklyn Bridge </a>",
+    "<a href='http://www.tishmanspeyer.com/properties/chrysler-center/'> Chrysler Building </a>",
+    "<a href='https://www.libertyellisfoundation.org/about-the-ellis-island/'> Ellis Island </a>",
+    "<a href='http://www.broadway.com/'> Broadway </a>",
+    "<a href='http://new-york-chinatown.info/'> Chinatown </a>"
+  )
+  
+nycLatLong %>% 
+    leaflet() %>%
+    addTiles() %>%
+    addMarkers(icon = nycIcon, popup = nycSites) %>%
+    addRectangles(lat1 = 40.68, lng1 = -74.06, lat2 = 40.80, lng2 = -73.94)
+
+```
+
+
+
+## More information:
+For more details about the leaflet package for R visit http://rstudio.github.io/leaflet/.
